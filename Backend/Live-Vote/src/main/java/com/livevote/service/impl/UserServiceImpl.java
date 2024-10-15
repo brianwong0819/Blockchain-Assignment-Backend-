@@ -28,10 +28,11 @@ public class UserServiceImpl implements UserServiceInterface {
             return response;
         }
 
-        Optional<User> userOptional = userRepository.findByUsername(loginRequest.getUsername());
+        User user = userRepository.findByUsername(loginRequest.getUsername());
 
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
+        if (StringUtils.isEmpty(user.getUsername()) || StringUtils.isEmpty(user.getHashedPassword())) {
+            response.setMessage("Username or password is empty");
+            response.setStatusCode(402);
 
             if (StringUtils.equals(user.getHashedPassword(), loginRequest.getPassword())) {
                 response.setMessage("Password is correct, Login Successfully");
