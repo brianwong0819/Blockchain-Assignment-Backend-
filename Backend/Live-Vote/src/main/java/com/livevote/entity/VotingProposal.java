@@ -1,0 +1,29 @@
+package com.livevote.entity;
+
+import jakarta.persistence.*;
+import lombok.Data;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Data
+@Table(name = "voting_proposal")
+public class VotingProposal {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String title;
+    private String body;
+    private String avatar;
+    private String symbol;
+    private String state;
+    private Long startDate;
+    private Long endDate;
+    private int numOfQR;
+
+    @OneToMany(mappedBy = "votingProposal", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<VotingChoices> votingChoices = new ArrayList<>();
+
+}

@@ -12,6 +12,8 @@ import org.springframework.util.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import java.util.Optional;
 
+import static com.livevote.utils.Utility.*;
+
 @Service
 public class UserServiceImpl implements UserServiceInterface {
 
@@ -24,7 +26,7 @@ public class UserServiceImpl implements UserServiceInterface {
         Response response = new Response();
         if (StringUtils.isEmpty(loginRequest.getPassword()) || StringUtils.isEmpty(loginRequest.getUsername())) {
             response.setMessage("Login Request is empty");
-            response.setStatusCode(404);
+            response.setStatusCode(STATUS_INVALID_REQUEST);
             return response;
         }
 
@@ -32,18 +34,15 @@ public class UserServiceImpl implements UserServiceInterface {
 
         if (StringUtils.isEmpty(user.getUsername()) || StringUtils.isEmpty(user.getHashedPassword())) {
             response.setMessage("Username or password is empty");
-            response.setStatusCode(402);
-
-            if (StringUtils.equals(user.getHashedPassword(), loginRequest.getPassword())) {
-                response.setMessage("Password is correct, Login Successfully");
-                response.setStatusCode(200);
-            } else {
-                response.setMessage("Password is incorrect, Login Unsuccessfully");
-                response.setStatusCode(404);
-            }
+            response.setStatusCode(STATUS_INVALID_REQUEST);
+        }
+        if (StringUtils.equals(user.getHashedPassword(), loginRequest.getPassword()) &&
+                StringUtils.equals(user.getUsername(), loginRequest.getUsername())){
+            response.setMessage("Password is correct, Login Successfully");
+            response.setStatusCode(STATUS_SUCCESSFUL);
         } else {
-            response.setMessage("Username not found");
-            response.setStatusCode(401);
+            response.setMessage("Password is incorrect, Login Unsuccessfully");
+            response.setStatusCode(STATUS_NOT_FOUND);
         }
         return response;
     }
