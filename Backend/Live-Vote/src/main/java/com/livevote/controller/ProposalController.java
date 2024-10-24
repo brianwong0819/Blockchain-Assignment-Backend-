@@ -32,5 +32,4 @@ public class ProposalController {
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
-
 }

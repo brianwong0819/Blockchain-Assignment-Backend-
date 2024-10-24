@@ -10,6 +10,7 @@ import com.livevote.service.interfac.ProposalServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Files;
@@ -30,6 +31,7 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
     @Override
     public Response createProposal(ProposalRequest proposalRequest, MultipartFile avatar, List<MultipartFile> choiceAvatars) throws Exception {
         String avatarPath = saveFile(avatar);
+        String state = determineState(proposalRequest.getStartDate(), proposalRequest.getEndDate());
 
         VotingProposal votingProposal = new VotingProposal();
         votingProposal.setTitle(proposalRequest.getTitle());
@@ -38,6 +40,7 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
         votingProposal.setSymbol(proposalRequest.getSymbol());
         votingProposal.setStartDate(proposalRequest.getStartDate());
         votingProposal.setEndDate(proposalRequest.getEndDate());
+        votingProposal.setState(state);
         votingProposal.setNumOfQR(proposalRequest.getNumOfQR());
 
         votingProposalRepository.save(votingProposal);
@@ -83,4 +86,15 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
         return null;
     }
 
+    private String determineState(Long startDate, Long endDate) {
+        long currentTime = System.currentTimeMillis();
+
+        if (currentTime < startDate) {
+            return "pending";
+        } else if (currentTime >= startDate && currentTime <= endDate) {
+            return "active";
+        } else {
+            return "closed";
+        }
+    }
 }

@@ -2,7 +2,6 @@ package com.livevote.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
 
 @Entity
 @Data
