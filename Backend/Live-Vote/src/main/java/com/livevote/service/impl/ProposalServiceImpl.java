@@ -74,7 +74,7 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
     }
 
     private String saveFile(MultipartFile file) throws Exception {
-        Path uploadDirectory = Paths.get("uploads");
+        Path uploadDirectory = Paths.get("Backend/Live-Vote/uploads");
         if (!Files.exists(uploadDirectory)) {
             Files.createDirectories(uploadDirectory);
         }
