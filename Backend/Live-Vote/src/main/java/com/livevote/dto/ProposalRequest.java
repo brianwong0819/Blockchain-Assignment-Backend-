@@ -12,7 +12,6 @@ public class ProposalRequest {
 
     private String title;
     private String body;
-    private MultipartFile avatar;
     private String symbol;
     private Long startDate;
     private Long endDate;
@@ -22,6 +21,6 @@ public class ProposalRequest {
     @Data
     public static class ChoiceRequest {
         private String name;
-        private MultipartFile avatar;
     }
 }
+

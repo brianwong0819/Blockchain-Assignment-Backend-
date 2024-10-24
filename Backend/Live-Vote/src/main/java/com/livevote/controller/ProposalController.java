@@ -8,6 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/proposals")
@@ -18,9 +21,16 @@ public class ProposalController {
     private ProposalServiceInterface proposalService;
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/create-proposal")
-    public ResponseEntity<Response> createProposal(@RequestBody ProposalRequest proposalRequest) {
-        log.info("/create-proposal");
-        Response response = proposalService.createProposal(proposalRequest);
+    public ResponseEntity<Response> createProposal(
+            @RequestPart("proposalData") ProposalRequest proposalRequest,
+            @RequestPart("files") List<MultipartFile> files
+    ) throws Exception {
+        MultipartFile avatar = files.get(0);
+        List<MultipartFile> choiceAvatars = files.subList(1, files.size());
+
+        Response response = proposalService.createProposal(proposalRequest, avatar, choiceAvatars);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
+
+
 }

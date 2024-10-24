@@ -2,6 +2,7 @@ package com.livevote.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 @Entity
 @Data
@@ -14,7 +15,6 @@ public class VotingChoices {
 
     private String name;
     private String avatar;
-    private Integer score;
 
     @ManyToOne
     @JoinColumn(name = "voting_proposal_id")
