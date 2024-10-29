@@ -1,5 +1,6 @@
 package com.livevote.service.impl;
 
+import com.livevote.dto.ProposalDetailsResponse;
 import com.livevote.dto.ProposalRequest;
 import com.livevote.dto.Response;
 import com.livevote.entity.VotingProposal;
@@ -10,14 +11,15 @@ import com.livevote.service.interfac.ProposalServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProposalServiceImpl implements ProposalServiceInterface {
@@ -32,16 +34,20 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
     public Response createProposal(ProposalRequest proposalRequest, MultipartFile avatar, List<MultipartFile> choiceAvatars) throws Exception {
         String avatarPath = saveFile(avatar);
         String state = determineState(proposalRequest.getStartDate(), proposalRequest.getEndDate());
+        String proposalId = generateProposalId();
 
-        VotingProposal votingProposal = new VotingProposal();
-        votingProposal.setTitle(proposalRequest.getTitle());
-        votingProposal.setBody(proposalRequest.getBody());
-        votingProposal.setAvatar(avatarPath);
-        votingProposal.setSymbol(proposalRequest.getSymbol());
-        votingProposal.setStartDate(proposalRequest.getStartDate());
-        votingProposal.setEndDate(proposalRequest.getEndDate());
-        votingProposal.setState(state);
-        votingProposal.setNumOfQR(proposalRequest.getNumOfQR());
+        VotingProposal votingProposal = VotingProposal.builder()
+                .proposalId(proposalId)
+                .title(proposalRequest.getTitle())
+                .body(proposalRequest.getBody())
+                .avatar(avatarPath)
+                .symbol(proposalRequest.getSymbol())
+                .startDate(proposalRequest.getStartDate())
+                .endDate(proposalRequest.getEndDate())
+                .state(state)
+                .numOfQR(proposalRequest.getNumOfQR())
+                .createDate(proposalRequest.getCreateDate())
+                .build();
 
         votingProposalRepository.save(votingProposal);
 
@@ -54,24 +60,50 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
 
         List<VotingChoices> choicesList = new ArrayList<>();
         for (int i = 0; i < choiceNames.size(); i++) {
-            VotingChoices choice = new VotingChoices();
-            choice.setName(choiceNames.get(i));
-
-            String choiceAvatarPath = saveFile(choiceAvatars.get(i));
-            choice.setAvatar(choiceAvatarPath);
-
-            choice.setVotingProposal(votingProposal);
+            VotingChoices choice = VotingChoices.builder()
+                    .name(choiceNames.get(i))
+                    .avatar(saveFile(choiceAvatars.get(i)))
+                    .votingProposal(votingProposal)
+                    .build();
 
             choicesList.add(choice);
         }
 
         votingChoicesRepository.saveAll(choicesList);
 
-        Response response = new Response();
-        response.setStatusCode(200);
-        response.setMessage("Proposal and choices created successfully");
-        return response;
+        return Response.builder()
+                .statusCode(200)
+                .message("Proposal and choices created successfully")
+                .build();
     }
+
+
+    @Override
+    public ProposalDetailsResponse viewProposalDetails(String proposalId) {
+        VotingProposal proposal = votingProposalRepository.findByProposalId(proposalId);
+
+        List<ProposalDetailsResponse.ChoiceDetails> choiceDetails = proposal.getVotingChoices().stream()
+                .map(choice -> ProposalDetailsResponse.ChoiceDetails.builder()
+                        .name(choice.getName())
+                        .avatarUrl("/uploads/" + choice.getAvatar())
+                        .build())
+                .collect(Collectors.toList());
+
+        return ProposalDetailsResponse.builder()
+                .proposalId(proposal.getProposalId())
+                .title(proposal.getTitle())
+                .body(proposal.getBody())
+                .symbol(proposal.getSymbol())
+                .startDate(proposal.getStartDate())
+                .endDate(proposal.getEndDate())
+                .state(proposal.getState())
+                .numOfQR(proposal.getNumOfQR())
+                .createDate(proposal.getCreateDate())
+                .avatarUrl("/uploads/" + proposal.getAvatar())
+                .choices(choiceDetails)
+                .build();
+    }
+
 
     private String saveFile(MultipartFile file) throws Exception {
         Path uploadDirectory = Paths.get("Backend/Live-Vote/uploads");
@@ -97,4 +129,42 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
             return "closed";
         }
     }
+
+    private String generateProposalId() {
+        long count = votingProposalRepository.count();
+        DecimalFormat format = new DecimalFormat("00000");
+        return "PRP_" + format.format(count + 1);
+    }
+
+    @Override
+    public List<ProposalDetailsResponse> viewAllProposals() {
+        List<VotingProposal> proposals = votingProposalRepository.findAll();
+
+        return proposals.stream()
+                .map(proposal -> {
+                    List<ProposalDetailsResponse.ChoiceDetails> choiceDetails = proposal.getVotingChoices().stream()
+                            .map(choice -> ProposalDetailsResponse.ChoiceDetails.builder()
+                                    .name(choice.getName())
+                                    .avatarUrl("/uploads/" + choice.getAvatar())
+                                    .build())
+                            .collect(Collectors.toList());
+
+                    return ProposalDetailsResponse.builder()
+                            .proposalId(proposal.getProposalId())
+                            .title(proposal.getTitle())
+                            .body(proposal.getBody())
+                            .symbol(proposal.getSymbol())
+                            .state(proposal.getState())
+                            .startDate(proposal.getStartDate())
+                            .endDate(proposal.getEndDate())
+                            .numOfQR(proposal.getNumOfQR())
+                            .createDate(proposal.getCreateDate())
+                            .avatarUrl("/uploads/" + proposal.getAvatar())
+                            .choices(choiceDetails)
+                            .build();
+                })
+                .collect(Collectors.toList());
+    }
+
+
 }

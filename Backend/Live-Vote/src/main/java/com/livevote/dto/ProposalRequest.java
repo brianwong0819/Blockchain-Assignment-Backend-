@@ -15,6 +15,7 @@ public class ProposalRequest {
     private String symbol;
     private Long startDate;
     private Long endDate;
+    private Long createDate;
     private int numOfQR;
     private List<ChoiceRequest> choices;
 

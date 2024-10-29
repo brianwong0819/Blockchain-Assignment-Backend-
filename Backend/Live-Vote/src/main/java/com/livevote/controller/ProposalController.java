@@ -1,5 +1,6 @@
 package com.livevote.controller;
 
+import com.livevote.dto.ProposalDetailsResponse;
 import com.livevote.dto.ProposalRequest;
 import com.livevote.dto.Response;
 import com.livevote.service.interfac.ProposalServiceInterface;
@@ -17,19 +18,40 @@ import java.util.List;
 
 public class ProposalController {
     private static final Logger log = LoggerFactory.getLogger(ProposalController.class);
+
     @Autowired
     private ProposalServiceInterface proposalService;
+
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/create-proposal")
     public ResponseEntity<Response> createProposal(
             @RequestPart("proposalData") ProposalRequest proposalRequest,
             @RequestPart("files") List<MultipartFile> files
     ) throws Exception {
+        log.info("create-proposal");
+
         MultipartFile avatar = files.get(0);
         List<MultipartFile> choiceAvatars = files.subList(1, files.size());
 
         Response response = proposalService.createProposal(proposalRequest, avatar, choiceAvatars);
         return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping("/view-proposal-details/{proposalId}")
+    public ResponseEntity<ProposalDetailsResponse> viewDetails(@PathVariable String proposalId) {
+        log.info("view-proposal-details");
+
+        ProposalDetailsResponse response = proposalService.viewProposalDetails(proposalId);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/view-all-proposals")
+    public ResponseEntity<List<ProposalDetailsResponse>> viewAllProposals() {
+        log.info("view-all-proposals");
+
+        List<ProposalDetailsResponse> response = proposalService.viewAllProposals();
+        return ResponseEntity.ok(response);
     }
 
 }
