@@ -21,7 +21,7 @@ public class ProposalDetailsResponse {
     private Long endDate;
     private int numOfQR;
     private Long createDate;
-    private String avatarUrl;
+    private String avatar;
     private List<ChoiceDetails> choices;
 
     @Data
@@ -30,6 +30,6 @@ public class ProposalDetailsResponse {
     @AllArgsConstructor
     public static class ChoiceDetails {
         private String name;
-        private String avatarUrl;
+        private String avatar;
     }
 }

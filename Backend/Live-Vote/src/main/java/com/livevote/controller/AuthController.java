@@ -18,7 +18,7 @@ public class AuthController {
     private UserServiceInterface userService;
 
     @PostMapping("/login")
-    @CrossOrigin(origins = "http://localhost:5174") // Allow requests from the front-end origin
+    @CrossOrigin(origins = "http://localhost:5173") // Allow requests from the front-end origin
     public ResponseEntity<Response> login(@RequestBody LoginRequest loginRequest) {
         log.info("/login");
         Response response = userService.login(loginRequest);

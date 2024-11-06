@@ -22,7 +22,7 @@ public class ProposalController {
     @Autowired
     private ProposalServiceInterface proposalService;
 
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin(origins = "http://localhost:5173")
     @PostMapping("/create-proposal")
     public ResponseEntity<Response> createProposal(
             @RequestPart("proposalData") ProposalRequest proposalRequest,
@@ -37,15 +37,16 @@ public class ProposalController {
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
-    @GetMapping("/view-proposal-details/{proposalId}")
-    public ResponseEntity<ProposalDetailsResponse> viewDetails(@PathVariable String proposalId) {
+    @CrossOrigin(origins = "http://localhost:5173")
+    @GetMapping("/view-proposal-details")
+    public ResponseEntity<ProposalDetailsResponse> viewDetails(@RequestParam String proposalId) {
         log.info("view-proposal-details");
 
         ProposalDetailsResponse response = proposalService.viewProposalDetails(proposalId);
         return ResponseEntity.ok(response);
     }
 
+    @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping("/view-all-proposals")
     public ResponseEntity<List<ProposalDetailsResponse>> viewAllProposals() {
         log.info("view-all-proposals");

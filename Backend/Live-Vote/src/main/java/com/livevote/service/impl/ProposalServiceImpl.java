@@ -85,7 +85,7 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
         List<ProposalDetailsResponse.ChoiceDetails> choiceDetails = proposal.getVotingChoices().stream()
                 .map(choice -> ProposalDetailsResponse.ChoiceDetails.builder()
                         .name(choice.getName())
-                        .avatarUrl("/uploads/" + choice.getAvatar())
+                        .avatar(choice.getAvatar())
                         .build())
                 .collect(Collectors.toList());
 
@@ -99,14 +99,13 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
                 .state(proposal.getState())
                 .numOfQR(proposal.getNumOfQR())
                 .createDate(proposal.getCreateDate())
-                .avatarUrl("/uploads/" + proposal.getAvatar())
+                .avatar(proposal.getAvatar())
                 .choices(choiceDetails)
                 .build();
     }
 
-
     private String saveFile(MultipartFile file) throws Exception {
-        Path uploadDirectory = Paths.get("Backend/Live-Vote/uploads");
+        Path uploadDirectory = Paths.get("uploads");
         if (!Files.exists(uploadDirectory)) {
             Files.createDirectories(uploadDirectory);
         }
@@ -123,7 +122,7 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
 
         if (currentTime < startDate) {
             return "pending";
-        } else if (currentTime >= startDate && currentTime <= endDate) {
+        } else if (currentTime < endDate) {
             return "active";
         } else {
             return "closed";
@@ -145,7 +144,7 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
                     List<ProposalDetailsResponse.ChoiceDetails> choiceDetails = proposal.getVotingChoices().stream()
                             .map(choice -> ProposalDetailsResponse.ChoiceDetails.builder()
                                     .name(choice.getName())
-                                    .avatarUrl("/uploads/" + choice.getAvatar())
+                                    .avatar(choice.getAvatar())
                                     .build())
                             .collect(Collectors.toList());
 
@@ -159,12 +158,11 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
                             .endDate(proposal.getEndDate())
                             .numOfQR(proposal.getNumOfQR())
                             .createDate(proposal.getCreateDate())
-                            .avatarUrl("/uploads/" + proposal.getAvatar())
+                            .avatar(proposal.getAvatar())
                             .choices(choiceDetails)
                             .build();
                 })
                 .collect(Collectors.toList());
     }
-
 
 }
