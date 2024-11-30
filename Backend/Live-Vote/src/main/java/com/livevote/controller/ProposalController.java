@@ -41,7 +41,7 @@ public class ProposalController {
     }
 
     @CrossOrigin(
-            origins = {"http://localhost:3000"}
+            origins = {"http://localhost:5173"}
     )
     @GetMapping({"/view-proposal-details/{proposalId}"})
     public ResponseEntity<ProposalDetailsResponse> viewDetails(@PathVariable String proposalId) {
@@ -50,6 +50,9 @@ public class ProposalController {
         return ResponseEntity.ok(response);
     }
 
+    @CrossOrigin(
+            origins = {"http://localhost:5173"}
+    )
     @GetMapping({"/view-all-proposals"})
     public ResponseEntity<List<ProposalDetailsResponse>> viewAllProposals() {
         log.info("view-all-proposals");
