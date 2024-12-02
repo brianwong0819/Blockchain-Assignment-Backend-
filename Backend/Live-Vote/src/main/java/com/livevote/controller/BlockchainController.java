@@ -2,14 +2,13 @@ package com.livevote.controller;
 
 import com.livevote.service.interfac.BlockchainServiceInterface;
 import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping({"/api/voting"})
@@ -75,13 +74,19 @@ public class BlockchainController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping({"/getUserTokenBalance"})
-    public ResponseEntity<BigInteger> getUserTokenBalanceInRoom(@RequestParam String roomId, @RequestParam String userAddress) {
+    public ResponseEntity<Map<String, BigInteger>> getUserTokenBalanceInRoom(@RequestParam String roomId, @RequestParam String userAddress) {
         try {
             BigInteger balance = this.votingService.getUserTokenBalanceInRoom(roomId, userAddress);
-            return ResponseEntity.ok(balance);
+            System.out.println("User token balance: " + balance);
+            Map<String, BigInteger> response = new HashMap<>();
+            response.put("balance", balance);
+            return ResponseEntity.ok(response);
         } catch (Exception var4) {
-            return ResponseEntity.status(500).body(BigInteger.ZERO);
+            Map<String, BigInteger> errorResponse = new HashMap<>();
+            errorResponse.put("balance", BigInteger.ZERO);
+            return ResponseEntity.status(500).body(errorResponse);
         }
     }
 }
