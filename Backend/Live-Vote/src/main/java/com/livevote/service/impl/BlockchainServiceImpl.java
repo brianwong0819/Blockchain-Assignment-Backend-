@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.web3j.crypto.Credentials;
 import org.web3j.tuples.generated.Tuple2;
-import org.web3j.tuples.generated.Tuple3;
 import org.web3j.tx.gas.DefaultGasProvider;
 
 @Service
@@ -88,33 +87,39 @@ public class BlockchainServiceImpl implements BlockchainServiceInterface {
 
     public String getRoomDetails(String roomId) {
         try {
-            BigInteger numericRoomId = BigInteger.valueOf((long)Integer.parseInt(roomId.substring(4)));
+            BigInteger numericRoomId = BigInteger.valueOf((long) Integer.parseInt(roomId.substring(4)));
             VotingRooms votingRooms = this.getAdminVotingRooms();
-            Tuple3<BigInteger, List<BigInteger>, Boolean> roomDetails = (Tuple3)votingRooms.getRoomDetails(numericRoomId).send();
-            BigInteger tokenLimit = (BigInteger)roomDetails.component1();
-            List<BigInteger> candidateIds = (List)roomDetails.component2();
-            Boolean votingOpen = (Boolean)roomDetails.component3();
-            List<BigInteger> voteCounts = (List)((Tuple2)votingRooms.getRoomResults(numericRoomId).send()).component2();
-            BigInteger distributedTokens = (BigInteger)((Tuple3)votingRooms.rooms(numericRoomId).send()).component2();
+
+            Tuple2<BigInteger, List<BigInteger>> roomDetails = (Tuple2) votingRooms.getRoomDetails(numericRoomId).send();
+
+            BigInteger tokenLimit = roomDetails.component1();
+            List<BigInteger> candidateIds = roomDetails.component2();
+
+            Tuple2<List<BigInteger>, List<BigInteger>> roomResults = (Tuple2) votingRooms.getRoomResults(numericRoomId).send();
+            List<BigInteger> voteCounts = roomResults.component2();
+
+            Tuple2<BigInteger, BigInteger> roomTokenInfo = (Tuple2) votingRooms.rooms(numericRoomId).send();
+            BigInteger distributedTokens = roomTokenInfo.component2();
+
             BigInteger remainingTokens = tokenLimit.subtract(distributedTokens);
+
             StringBuilder details = new StringBuilder("Room ID: " + roomId + "\n");
             details.append("Token Limit: ").append(tokenLimit).append("\n");
             details.append("Distributed Tokens: ").append(distributedTokens).append("\n");
             details.append("Remaining Tokens: ").append(remainingTokens).append("\n");
-            details.append("Voting Status: ").append(votingOpen ? "Open" : "Closed").append("\n");
             details.append("Candidates:\n");
 
-            for(int i = 0; i < candidateIds.size(); ++i) {
+            for (int i = 0; i < candidateIds.size(); ++i) {
                 details.append("Candidate ID: ").append(candidateIds.get(i)).append(", Votes: ").append(voteCounts.get(i)).append("\n");
             }
 
             return details.toString();
-        } catch (Exception var13) {
-            Exception e = var13;
+        } catch (Exception e) {
             logger.error("Error getting room details", e);
             throw new RuntimeException("Error getting room details: " + e.getMessage());
         }
     }
+
 
     public void distributeTokens(String roomId, String userAddress, int amount) throws Exception {
         try {
@@ -125,6 +130,18 @@ public class BlockchainServiceImpl implements BlockchainServiceInterface {
             Exception e = var6;
             logger.error("Error distributing tokens", e);
             throw new Exception("Error distributing tokens: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public BigInteger getUserTokenBalanceInRoom(String roomId, String userAddress) {
+        try {
+            int numericRoomId = Integer.parseInt(roomId.substring(4));
+            VotingRooms votingRooms = this.getAdminVotingRooms();
+            return votingRooms.getUserTokenBalanceInRoom(BigInteger.valueOf(numericRoomId), userAddress).send();
+        } catch (Exception var4) {
+            logger.error("Error getting user token balance", var4);
+            throw new RuntimeException("Error getting user token balance: " + var4.getMessage());
         }
     }
 }

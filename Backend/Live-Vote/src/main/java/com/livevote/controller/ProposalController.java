@@ -40,9 +40,7 @@ public class ProposalController {
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
-    @CrossOrigin(
-            origins = {"http://localhost:5173"}
-    )
+    @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping({"/view-proposal-details/{proposalId}"})
     public ResponseEntity<ProposalDetailsResponse> viewDetails(@PathVariable String proposalId) {
         log.info("view-proposal-details");

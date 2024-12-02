@@ -16,4 +16,7 @@ public interface BlockchainServiceInterface {
     String getRoomDetails(String roomId);
 
     void distributeTokens(String roomId, String userAddress, int amount) throws Exception;
+
+    BigInteger getUserTokenBalanceInRoom(String roomId, String userAddress);
+
 }

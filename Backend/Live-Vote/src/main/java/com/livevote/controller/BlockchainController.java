@@ -74,4 +74,14 @@ public class BlockchainController {
             return ResponseEntity.status(500).body("Failed to distribute tokens: " + e.getMessage());
         }
     }
+
+    @GetMapping({"/getUserTokenBalance"})
+    public ResponseEntity<BigInteger> getUserTokenBalanceInRoom(@RequestParam String roomId, @RequestParam String userAddress) {
+        try {
+            BigInteger balance = this.votingService.getUserTokenBalanceInRoom(roomId, userAddress);
+            return ResponseEntity.ok(balance);
+        } catch (Exception var4) {
+            return ResponseEntity.status(500).body(BigInteger.ZERO);
+        }
+    }
 }

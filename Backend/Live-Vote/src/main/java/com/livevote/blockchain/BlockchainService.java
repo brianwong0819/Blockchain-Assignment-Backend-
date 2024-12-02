@@ -22,7 +22,7 @@ public class BlockchainService {
             this.credentials = Credentials.create(privateKey);
             this.votingRooms = VotingRooms.load(CONTRACT_ADDRESS, this.web3j, this.credentials, new DefaultGasProvider());
         } else {
-            throw new IllegalArgumentException("Admin private key cannot be null or empty. Please set it correctly in the environment variables.");
+            throw new IllegalArgumentException("Admin private key cannot be null or empty.");
         }
     }
 
