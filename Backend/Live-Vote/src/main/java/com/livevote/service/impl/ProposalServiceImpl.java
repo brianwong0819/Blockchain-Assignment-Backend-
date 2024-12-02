@@ -1,14 +1,8 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
-
 package com.livevote.service.impl;
 
 import com.livevote.dto.ProposalDetailsResponse;
 import com.livevote.dto.ProposalRequest;
 import com.livevote.dto.Response;
-import com.livevote.dto.ProposalDetailsResponse.ChoiceDetails;
 import com.livevote.entity.VotingChoices;
 import com.livevote.entity.VotingProposal;
 import com.livevote.repository.VotingChoicesRepository;
@@ -107,8 +101,17 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
     public List<ProposalDetailsResponse> viewAllProposals() {
         List<VotingProposal> proposals = votingProposalRepository.findAll();
 
-        return proposals.stream()
+        List<VotingProposal> updatedProposals = new ArrayList<>();
+
+        List<ProposalDetailsResponse> responseList = proposals.stream()
                 .map(proposal -> {
+                    // Check and update the state
+                    String newState = determineState(proposal.getStartDate(), proposal.getEndDate());
+                    if (!newState.equals(proposal.getState())) {
+                        proposal.setState(newState);
+                        updatedProposals.add(proposal);
+                    }
+
                     List<ProposalDetailsResponse.ChoiceDetails> choiceDetails = proposal.getVotingChoices().stream()
                             .map(choice -> ProposalDetailsResponse.ChoiceDetails.builder()
                                     .name(choice.getName())
@@ -121,7 +124,7 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
                             .title(proposal.getTitle())
                             .body(proposal.getBody())
                             .symbol(proposal.getSymbol())
-                            .state(proposal.getState())
+                            .state(newState) // Use updated state
                             .startDate(proposal.getStartDate())
                             .endDate(proposal.getEndDate())
                             .numOfQR(proposal.getNumOfQR())
@@ -131,7 +134,14 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
                             .build();
                 })
                 .collect(Collectors.toList());
+
+        if (!updatedProposals.isEmpty()) {
+            votingProposalRepository.saveAll(updatedProposals);
+        }
+
+        return responseList;
     }
+
 
     private String saveFile(MultipartFile file) throws Exception {
         Path uploadDirectory = Paths.get("uploads");
