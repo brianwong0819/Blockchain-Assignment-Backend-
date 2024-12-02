@@ -149,7 +149,7 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
     }
 
     private String determineState(Long startDate, Long endDate) {
-        long currentTime = System.currentTimeMillis();
+        long currentTime = System.currentTimeMillis() / 1000;
         if (currentTime < startDate) {
             return "pending";
         } else {
