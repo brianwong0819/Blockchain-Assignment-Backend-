@@ -23,7 +23,10 @@ public class VotingProposal {
 
     private String proposalId;
     private String title;
+
+    @Column(length = 3000)
     private String body;
+
     private String avatar;
     private String symbol;
     private String state;
