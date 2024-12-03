@@ -38,7 +38,18 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
         String avatarPath = this.saveFile(avatar);
         String state = this.determineState(proposalRequest.getStartDate(), proposalRequest.getEndDate());
         String proposalId = this.generateProposalId();
-        VotingProposal votingProposal = VotingProposal.builder().proposalId(proposalId).title(proposalRequest.getTitle()).body(proposalRequest.getBody()).avatar(avatarPath).symbol(proposalRequest.getSymbol()).startDate(proposalRequest.getStartDate()).endDate(proposalRequest.getEndDate()).state(state).numOfQR(proposalRequest.getNumOfQR()).createDate(proposalRequest.getCreateDate()).build();
+        VotingProposal votingProposal = VotingProposal.builder()
+                .proposalId(proposalId)
+                .title(proposalRequest.getTitle())
+                .body(proposalRequest.getBody())
+                .avatar(avatarPath)
+                .symbol(proposalRequest.getSymbol())
+                .startDate(proposalRequest.getStartDate())
+                .endDate(proposalRequest.getEndDate())
+                .state(state)
+                .numOfQR(proposalRequest.getNumOfQR())
+                .createDate(proposalRequest.getCreateDate())
+                .build();
         this.votingProposalRepository.save(votingProposal);
         List<String> choiceNames = proposalRequest.getChoices().stream().map(ProposalRequest.ChoiceRequest::getName).toList();
         if (choiceNames.size() != choiceAvatars.size()) {
@@ -47,7 +58,11 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
             List<VotingChoices> choicesList = new ArrayList();
 
             for(int i = 0; i < choiceNames.size(); ++i) {
-                VotingChoices choice = VotingChoices.builder().name((String)choiceNames.get(i)).avatar(this.saveFile((MultipartFile)choiceAvatars.get(i))).votingProposal(votingProposal).build();
+                VotingChoices choice = VotingChoices.builder()
+                        .name((String)choiceNames.get(i))
+                        .avatar(this.saveFile((MultipartFile)choiceAvatars.get(i)))
+                        .votingProposal(votingProposal)
+                        .build();
                 choicesList.add(choice);
             }
 
@@ -77,6 +92,7 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
 
         List<ProposalDetailsResponse.ChoiceDetails> choiceDetails = proposal.getVotingChoices().stream()
                 .map(choice -> ProposalDetailsResponse.ChoiceDetails.builder()
+                        .choiceId(choice.getChoiceId())
                         .name(choice.getName())
                         .avatar(choice.getAvatar())
                         .build())

@@ -29,6 +29,7 @@ public class ProposalDetailsResponse {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ChoiceDetails {
+        private String choiceId;
         private String name;
         private String avatar;
     }

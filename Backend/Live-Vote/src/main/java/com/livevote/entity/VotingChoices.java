@@ -18,6 +18,7 @@ public class VotingChoices {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String choiceId;
     private String name;
     private String avatar;
 
