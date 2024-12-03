@@ -6,6 +6,8 @@ import com.livevote.contracts.VotingRooms;
 import com.livevote.service.interfac.BlockchainServiceInterface;
 import java.math.BigInteger;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,20 +35,28 @@ public class BlockchainServiceImpl implements BlockchainServiceInterface {
         return VotingRooms.load("0x5FbDB2315678afecb367f032d93F642f64180aa3", this.blockchainService.getWeb3j(), userCredentials, new DefaultGasProvider());
     }
 
-    public String createRoom(String roomId, int tokenLimit, List<Integer> candidateIds) {
+    public String createRoom(String roomId, int tokenLimit, List<String> candidateIds) {
         try {
             int numericRoomId = Integer.parseInt(roomId.substring(4));
+
+            List<BigInteger> candidateBigIntegers = candidateIds.stream()
+                    .map(candidateId -> new BigInteger(candidateId.replaceAll("\\D", "")))
+                    .collect(Collectors.toList());
+
             VotingRooms votingRooms = this.getAdminVotingRooms();
-            votingRooms.createRoom(BigInteger.valueOf((long)numericRoomId), BigInteger.valueOf((long)tokenLimit), List.of((BigInteger[])candidateIds.stream().map(BigInteger::valueOf).toArray((x$0) -> {
-                return new BigInteger[x$0];
-            }))).send();
+            votingRooms.createRoom(
+                    BigInteger.valueOf(numericRoomId),
+                    BigInteger.valueOf(tokenLimit),
+                    candidateBigIntegers
+            ).send();
+
             return "Voting room created successfully on blockchain";
-        } catch (Exception var6) {
-            Exception e = var6;
+        } catch (Exception e) {
             logger.error("Error creating voting room", e);
             return "Error creating voting room: " + e.getMessage();
         }
     }
+
 
     public String vote(String roomId, int candidateId, String userPrivateKey) {
         try {

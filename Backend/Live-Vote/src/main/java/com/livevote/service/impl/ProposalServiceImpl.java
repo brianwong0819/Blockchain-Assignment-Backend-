@@ -88,20 +88,21 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
             votingResultRepository.saveAll(qrEntries);
 
             try {
-                List<Integer> candidateIds = new ArrayList();
+                List<String> choiceIds = votingChoicesRepository.findChoiceIdsByProposalId(proposalId);
 
-                int roomId;
-                for(roomId = 0; roomId < choiceNames.size(); ++roomId) {
-                    candidateIds.add(roomId + 1);
-                }
-
-                roomId = Integer.parseInt(proposalId.substring(4));
-                String blockchainResponse = this.votingService.createRoom(proposalId, proposalRequest.getNumOfQR(), candidateIds);
+                String blockchainResponse = this.votingService.createRoom(proposalId, proposalRequest.getNumOfQR(), choiceIds);
                 System.out.println("Blockchain Response: " + blockchainResponse);
-                return Response.builder().statusCode(200).message("Proposal and choices created successfully, and voting room created on blockchain").build();
-            } catch (Exception var13) {
-                throw new RuntimeException("Failed to create blockchain voting room: " + var13.getMessage(), var13);
+
+                System.out.println("*************************\n " + choiceIds );
+
+                return Response.builder()
+                        .statusCode(200)
+                        .message("Proposal and choices created successfully, and voting room created on blockchain")
+                        .build();
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to create blockchain voting room: " + e.getMessage(), e);
             }
+
         }
     }
 

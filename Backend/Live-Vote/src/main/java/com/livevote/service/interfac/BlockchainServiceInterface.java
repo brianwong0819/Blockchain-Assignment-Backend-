@@ -5,7 +5,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 public interface BlockchainServiceInterface {
-    String createRoom(String roomId, int tokenLimit, List<Integer> candidateIds);
+    String createRoom(String roomId, int tokenLimit, List<String> candidateIds);
 
     String vote(String roomId, int candidateId, String userPrivateKey);
 
