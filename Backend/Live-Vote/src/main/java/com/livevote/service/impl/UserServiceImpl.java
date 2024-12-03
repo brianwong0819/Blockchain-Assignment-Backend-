@@ -5,12 +5,9 @@ import com.livevote.dto.Response;
 import com.livevote.entity.User;
 import com.livevote.repository.UserRepository;
 import com.livevote.service.interfac.UserServiceInterface;
-import org.apache.catalina.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import java.util.Optional;
 
 import static com.livevote.utils.Utility.*;
 

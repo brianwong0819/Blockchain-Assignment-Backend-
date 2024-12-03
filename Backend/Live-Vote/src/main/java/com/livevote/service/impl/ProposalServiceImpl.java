@@ -3,10 +3,13 @@ package com.livevote.service.impl;
 import com.livevote.dto.ProposalDetailsResponse;
 import com.livevote.dto.ProposalRequest;
 import com.livevote.dto.Response;
+import com.livevote.dto.VotingResultResponse;
 import com.livevote.entity.VotingChoices;
 import com.livevote.entity.VotingProposal;
+import com.livevote.entity.VotingResult;
 import com.livevote.repository.VotingChoicesRepository;
 import com.livevote.repository.VotingProposalRepository;
+import com.livevote.repository.VotingResultRepository;
 import com.livevote.service.interfac.BlockchainServiceInterface;
 import com.livevote.service.interfac.ProposalServiceInterface;
 import java.nio.file.Files;
@@ -17,6 +20,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.livevote.utils.HashUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -30,6 +35,8 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
     private VotingChoicesRepository votingChoicesRepository;
     @Autowired
     private BlockchainServiceInterface votingService;
+    @Autowired
+    private VotingResultRepository votingResultRepository;
 
     public ProposalServiceImpl() {
     }
@@ -65,8 +72,20 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
                         .build();
                 choicesList.add(choice);
             }
-
             this.votingChoicesRepository.saveAll(choicesList);
+
+            List<VotingResult> qrEntries = new ArrayList<>();
+            for (int i = 0; i < proposalRequest.getNumOfQR(); i++) {
+                String qrString = proposalId + "_QR_" + String.format("%04d", i + 1);
+                String hashedQrString = HashUtils.hashString(qrString);
+                VotingResult qrEntry = VotingResult.builder()
+                        .proposalId(proposalId)
+                        .qrCode(hashedQrString)
+                        .status(false)
+                        .build();
+                qrEntries.add(qrEntry);
+            }
+            votingResultRepository.saveAll(qrEntries);
 
             try {
                 List<Integer> candidateIds = new ArrayList();
@@ -156,6 +175,14 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
         }
 
         return responseList;
+    }
+    @Override
+    public List<String> getTokenQr(String proposalId) {
+        List<VotingResult> results = votingResultRepository.findByProposalId(proposalId);
+
+        return results.stream()
+                .map(VotingResult::getQrCode)
+                .collect(Collectors.toList());
     }
 
 

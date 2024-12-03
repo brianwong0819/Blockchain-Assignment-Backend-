@@ -3,19 +3,14 @@ package com.livevote.controller;
 import com.livevote.dto.ProposalDetailsResponse;
 import com.livevote.dto.ProposalRequest;
 import com.livevote.dto.Response;
+import com.livevote.dto.VotingResultResponse;
 import com.livevote.service.interfac.ProposalServiceInterface;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
@@ -55,6 +50,16 @@ public class ProposalController {
     public ResponseEntity<List<ProposalDetailsResponse>> viewAllProposals() {
         log.info("view-all-proposals");
         List<ProposalDetailsResponse> response = this.proposalService.viewAllProposals();
+        return ResponseEntity.ok(response);
+    }
+
+    @CrossOrigin(
+            origins = {"http://localhost:5173"}
+    )
+    @GetMapping({"/get-token-qr"})
+    public ResponseEntity<List<String>> getTokenQr(@RequestParam String proposalId) {
+        log.info("get-token-qr");
+        List<String> response = this.proposalService.getTokenQr(proposalId);
         return ResponseEntity.ok(response);
     }
 }

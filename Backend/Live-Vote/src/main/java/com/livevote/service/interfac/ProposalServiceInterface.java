@@ -9,6 +9,8 @@ import com.livevote.dto.ProposalDetailsResponse;
 import com.livevote.dto.ProposalRequest;
 import com.livevote.dto.Response;
 import java.util.List;
+
+import com.livevote.dto.VotingResultResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface ProposalServiceInterface {
@@ -17,4 +19,6 @@ public interface ProposalServiceInterface {
     ProposalDetailsResponse viewProposalDetails(String proposalId);
 
     List<ProposalDetailsResponse> viewAllProposals();
+
+    List<String> getTokenQr(String proposalId);
 }
