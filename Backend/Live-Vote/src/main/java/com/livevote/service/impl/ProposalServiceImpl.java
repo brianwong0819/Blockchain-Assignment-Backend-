@@ -3,7 +3,6 @@ package com.livevote.service.impl;
 import com.livevote.dto.ProposalDetailsResponse;
 import com.livevote.dto.ProposalRequest;
 import com.livevote.dto.Response;
-import com.livevote.dto.VotingResultResponse;
 import com.livevote.entity.VotingChoices;
 import com.livevote.entity.VotingProposal;
 import com.livevote.entity.VotingResult;
@@ -22,6 +21,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.livevote.utils.HashUtils;
+import com.livevote.utils.Utility;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -94,7 +95,7 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
                 System.out.println("Blockchain Response: " + blockchainResponse);
 
                 return Response.builder()
-                        .statusCode(200)
+                        .statusCode(Utility.STATUS_SUCCESSFUL)
                         .message("Proposal and choices created successfully, and voting room created on blockchain")
                         .build();
             } catch (Exception e) {
@@ -106,29 +107,34 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
 
     @Override
     public ProposalDetailsResponse viewProposalDetails(String proposalId) {
-        VotingProposal proposal = votingProposalRepository.findByProposalId(proposalId);
+        if (StringUtils.isNotEmpty(proposalId)) {
 
-        List<ProposalDetailsResponse.ChoiceDetails> choiceDetails = proposal.getVotingChoices().stream()
-                .map(choice -> ProposalDetailsResponse.ChoiceDetails.builder()
-                        .choiceId(choice.getChoiceId())
-                        .name(choice.getName())
-                        .avatar(choice.getAvatar())
-                        .build())
-                .collect(Collectors.toList());
+            VotingProposal proposal = votingProposalRepository.findByProposalId(proposalId);
 
-        return ProposalDetailsResponse.builder()
-                .proposalId(proposal.getProposalId())
-                .title(proposal.getTitle())
-                .body(proposal.getBody())
-                .symbol(proposal.getSymbol())
-                .startDate(proposal.getStartDate())
-                .endDate(proposal.getEndDate())
-                .state(proposal.getState())
-                .numOfQR(proposal.getNumOfQR())
-                .createDate(proposal.getCreateDate())
-                .avatar(proposal.getAvatar())
-                .choices(choiceDetails)
-                .build();
+            List<ProposalDetailsResponse.ChoiceDetails> choiceDetails = proposal.getVotingChoices().stream()
+                    .map(choice -> ProposalDetailsResponse.ChoiceDetails.builder()
+                            .choiceId(choice.getChoiceId())
+                            .name(choice.getName())
+                            .avatar(choice.getAvatar())
+                            .build())
+                    .collect(Collectors.toList());
+
+            return ProposalDetailsResponse.builder()
+                    .proposalId(proposal.getProposalId())
+                    .title(proposal.getTitle())
+                    .body(proposal.getBody())
+                    .symbol(proposal.getSymbol())
+                    .startDate(proposal.getStartDate())
+                    .endDate(proposal.getEndDate())
+                    .state(proposal.getState())
+                    .numOfQR(proposal.getNumOfQR())
+                    .createDate(proposal.getCreateDate())
+                    .avatar(proposal.getAvatar())
+                    .choices(choiceDetails)
+                    .build();
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -184,6 +190,48 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public Response updateQrStatus(String proposalId, String qrCode, String userWalletAddress) {
+        if (StringUtils.isNotEmpty(proposalId) && StringUtils.isNotEmpty(proposalId) && StringUtils.isNotEmpty(userWalletAddress)) {
+            VotingResult votingResult = votingResultRepository.findByProposalIdAndQrCode(proposalId, qrCode);
+            votingResult.setUserAddress(userWalletAddress);
+            votingResult.setStatus(true);
+            votingResultRepository.save(votingResult);
+
+            return Response.builder()
+                    .statusCode(Utility.STATUS_SUCCESSFUL)
+                    .message("Qr Code Status is updated successfully")
+                    .build();
+        } else {
+            return Response.builder()
+                    .statusCode(Utility.STATUS_ERROR)
+                    .message("ProposalId or QrCode or User wallet address is missing")
+                    .build();
+        }
+    }
+
+    @Override
+    public Response saveVotingResult(String proposalId, String userWalletAddress, String choiceId) {
+        if (StringUtils.isNotEmpty(proposalId) && StringUtils.isNotEmpty(userWalletAddress) && StringUtils.isNotEmpty(choiceId)) {
+            VotingResult votingResult = votingResultRepository.findByProposalIdAndUserAddress(proposalId, userWalletAddress);
+            votingResult.setChoiceId(choiceId);
+            votingResultRepository.save(votingResult);
+
+            return Response.builder()
+                    .statusCode(Utility.STATUS_SUCCESSFUL)
+                    .message("Voting result is saved successfully.")
+                    .build();
+        } else {
+        return null;}
+    }
+
+    @Override
+    public List<String> getUserVotedProposals(String userWalletAddress) {
+        if (StringUtils.isNotEmpty(userWalletAddress)) {
+            return votingResultRepository.findByUserAddressAndStatusIsTrue(userWalletAddress);
+        }
+        return null;
+    }
 
     private String saveFile(MultipartFile file) throws Exception {
         Path uploadDirectory = Paths.get("uploads");
