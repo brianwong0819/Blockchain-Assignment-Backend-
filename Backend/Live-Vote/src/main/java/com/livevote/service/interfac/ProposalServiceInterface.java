@@ -25,4 +25,6 @@ public interface ProposalServiceInterface {
     Response updateQrStatus (String proposalId, String qrCode, String userWalletAddress);
 
     Response saveVotingResult(String proposalId, String userWalletAddress, String choiceId);
+
+    List<String> getUserVotedProposals(String userWalletAddress);
 }

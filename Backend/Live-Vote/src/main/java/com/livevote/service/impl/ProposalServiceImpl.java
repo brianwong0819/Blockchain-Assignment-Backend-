@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -144,6 +145,7 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
         List<VotingProposal> updatedProposals = new ArrayList<>();
 
         List<ProposalDetailsResponse> responseList = proposals.stream()
+                .sorted(Comparator.comparing(VotingProposal::getCreateDate).reversed())
                 .map(proposal -> {
                     // Check and update the state
                     String newState = determineState(proposal.getStartDate(), proposal.getEndDate());
@@ -181,6 +183,7 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
 
         return responseList;
     }
+
     @Override
     public List<String> getTokenQr(String proposalId) {
         List<VotingResult> results = votingResultRepository.findByProposalId(proposalId);
