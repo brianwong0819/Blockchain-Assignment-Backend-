@@ -227,6 +227,13 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
         return null;}
     }
 
+    @Override
+    public List<String> getUserVotedProposals(String userWalletAddress) {
+        if (StringUtils.isNotEmpty(userWalletAddress)) {
+            return votingResultRepository.findByUserAddressAndStatusIsTrue(userWalletAddress);
+        }
+        return null;
+    }
 
     private String saveFile(MultipartFile file) throws Exception {
         Path uploadDirectory = Paths.get("uploads");
