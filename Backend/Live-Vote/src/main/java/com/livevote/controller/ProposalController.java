@@ -4,6 +4,7 @@ import com.livevote.dto.ProposalDetailsResponse;
 import com.livevote.dto.ProposalRequest;
 import com.livevote.dto.Response;
 import com.livevote.dto.VotingResultResponse;
+import com.livevote.repository.UserRepository;
 import com.livevote.service.interfac.ProposalServiceInterface;
 import java.util.List;
 import org.slf4j.Logger;
@@ -19,6 +20,8 @@ public class ProposalController {
     private static final Logger log = LoggerFactory.getLogger(ProposalController.class);
     @Autowired
     private ProposalServiceInterface proposalService;
+    @Autowired
+    private UserRepository userRepository;
 
     public ProposalController() {
     }
@@ -60,6 +63,26 @@ public class ProposalController {
     public ResponseEntity<List<String>> getTokenQr(@RequestParam String proposalId) {
         log.info("get-token-qr");
         List<String> response = this.proposalService.getTokenQr(proposalId);
+        return ResponseEntity.ok(response);
+    }
+
+    @CrossOrigin(
+            origins = {"http://localhost:5173"}
+    )
+    @PostMapping({"/update-qr-status"})
+    public ResponseEntity<Response> updateQrStatus (@RequestParam String proposalId, @RequestParam String qrCode, @RequestParam String userWalletAddress) {
+        log.info("update-qr-status");
+        Response response = this.proposalService.updateQrStatus(proposalId, qrCode, userWalletAddress);
+        return ResponseEntity.ok(response);
+    }
+
+    @CrossOrigin(
+            origins = {"http://localhost:5173"}
+    )
+    @PostMapping({"/save-voting-result"})
+    public ResponseEntity<Response> saveVotingResult(@RequestParam String proposalId, @RequestParam String userWalletAddress, @RequestParam String choiceId) {
+        log.info("save-voting-result");
+        Response response = this.proposalService.saveVotingResult(proposalId, userWalletAddress, choiceId);
         return ResponseEntity.ok(response);
     }
 }
