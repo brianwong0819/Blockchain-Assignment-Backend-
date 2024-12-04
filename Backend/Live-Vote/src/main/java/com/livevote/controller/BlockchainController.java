@@ -2,7 +2,9 @@ package com.livevote.controller;
 
 import com.livevote.service.interfac.BlockchainServiceInterface;
 import java.math.BigInteger;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,9 +66,9 @@ public class BlockchainController {
     }
 
     @PostMapping({"/distributeTokens"})
-    public ResponseEntity<String> distributeTokens(@RequestParam String roomId, @RequestParam String userAddress, @RequestParam int amount) {
+    public ResponseEntity<String> distributeTokens(@RequestParam String roomId, @RequestParam String userAddress) {
         try {
-            this.votingService.distributeTokens(roomId, userAddress, amount);
+            this.votingService.distributeTokens(roomId, userAddress);
             return ResponseEntity.ok("Tokens distributed successfully");
         } catch (Exception var5) {
             Exception e = var5;
@@ -87,6 +89,31 @@ public class BlockchainController {
             Map<String, BigInteger> errorResponse = new HashMap<>();
             errorResponse.put("balance", BigInteger.ZERO);
             return ResponseEntity.status(500).body(errorResponse);
+        }
+    }
+
+    @GetMapping({"/getRoomResults"})
+    public ResponseEntity<Map<String, Object>> getRoomResults(@RequestParam String roomId) {
+        try {
+            Map<String, Object> results = this.votingService.getRoomResults(roomId);
+
+            return ResponseEntity.ok(results);
+        } catch (Exception var3) {
+            Exception e = var3;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("error", "Failed to get room results: " + e.getMessage()));
+        }
+    }
+
+    @GetMapping("/getClosedRoomDetails")
+    public ResponseEntity<List<Map<String, Object>>> getClosedRoomDetailsFromProposals() {
+        try {
+            List<Map<String, Object>> roomDetails = this.votingService.getClosedRoomsDetailsFromProposals();
+
+            return ResponseEntity.ok(roomDetails);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(List.of(Map.of("error", "Error fetching closed room details: " + e.getMessage())));
         }
     }
 }

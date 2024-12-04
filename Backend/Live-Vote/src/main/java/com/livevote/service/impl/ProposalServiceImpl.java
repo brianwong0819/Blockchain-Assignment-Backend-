@@ -93,8 +93,6 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
                 String blockchainResponse = this.votingService.createRoom(proposalId, proposalRequest.getNumOfQR(), choiceIds);
                 System.out.println("Blockchain Response: " + blockchainResponse);
 
-                System.out.println("*************************\n " + choiceIds );
-
                 return Response.builder()
                         .statusCode(200)
                         .message("Proposal and choices created successfully, and voting room created on blockchain")
