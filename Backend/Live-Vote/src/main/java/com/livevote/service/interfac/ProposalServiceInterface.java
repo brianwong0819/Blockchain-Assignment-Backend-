@@ -28,7 +28,7 @@ public interface ProposalServiceInterface {
 
     List<String> getUserVotedProposals(String userWalletAddress);
 
-    Response validateQrStatus(String qrCode);
+    Response validateQrStatus(String qrCode, String proposalId);
 
     List<VotingResultResponse> getVotingResult(String proposalId, String userWalletAddress);
 }
