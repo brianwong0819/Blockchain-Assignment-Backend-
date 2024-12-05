@@ -11,7 +11,8 @@ import java.util.List;
 
 @Repository
 public interface VotingResultRepository extends JpaRepository<VotingResult, Long> {
-    List<VotingResult> findByProposalId(String proposalId);
+    @Query("SELECT vr FROM VotingResult vr WHERE vr.proposalId = :proposalId AND vr.status = false")
+    List<VotingResult> findUnusedQRCodesByProposalId(@Param("proposalId") String proposalId);
 
     @Query("SELECT vr FROM VotingResult vr WHERE vr.proposalId = :proposalId AND vr.qrCode = :qrCode")
     VotingResult findByProposalIdAndQrCode(@Param("proposalId") String proposalId, @Param("qrCode") String qrCode);
@@ -22,4 +23,5 @@ public interface VotingResultRepository extends JpaRepository<VotingResult, Long
     @Query("SELECT v.proposalId FROM VotingResult v WHERE v.userAddress = :userAddress AND v.status = true")
     List<String> findByUserAddressAndStatusIsTrue(@Param("userAddress") String userAddress);
 
+    VotingResult findByQrCode(String qrCode);
 }

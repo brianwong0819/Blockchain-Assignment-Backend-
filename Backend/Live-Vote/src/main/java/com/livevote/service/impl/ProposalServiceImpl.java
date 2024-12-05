@@ -186,7 +186,7 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
 
     @Override
     public List<String> getTokenQr(String proposalId) {
-        List<VotingResult> results = votingResultRepository.findByProposalId(proposalId);
+        List<VotingResult> results = votingResultRepository.findUnusedQRCodesByProposalId(proposalId);
 
         return results.stream()
                 .map(VotingResult::getQrCode)
@@ -235,6 +235,18 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
         }
         return null;
     }
+
+    @Override
+    public Boolean validateQrStatus(String qrCode) {
+        if (StringUtils.isEmpty(qrCode)) {
+            throw new IllegalArgumentException("QR Code cannot be null or empty");
+        }
+
+        VotingResult votingResult = votingResultRepository.findByQrCode(qrCode);
+
+        return votingResult.getStatus();
+    }
+
 
     private String saveFile(MultipartFile file) throws Exception {
         Path uploadDirectory = Paths.get("uploads");

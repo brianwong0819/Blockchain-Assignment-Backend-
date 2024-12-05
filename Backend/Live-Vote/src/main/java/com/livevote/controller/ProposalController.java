@@ -69,6 +69,16 @@ public class ProposalController {
     @CrossOrigin(
             origins = {"http://localhost:5173"}
     )
+    @PostMapping({"/validate-qr-status"})
+    public ResponseEntity<Boolean> validateQrStatus(@RequestParam String qrCode) {
+        log.info("validate-qr-status");
+        Boolean response = this.proposalService.validateQrStatus(qrCode);
+        return ResponseEntity.ok(response);
+    }
+
+    @CrossOrigin(
+            origins = {"http://localhost:5173"}
+    )
     @PostMapping({"/update-qr-status"})
     public ResponseEntity<Response> updateQrStatus (@RequestParam String proposalId, @RequestParam String qrCode, @RequestParam String userWalletAddress) {
         log.info("update-qr-status");
