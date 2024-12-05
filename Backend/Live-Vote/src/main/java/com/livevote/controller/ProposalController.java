@@ -70,9 +70,9 @@ public class ProposalController {
             origins = {"http://localhost:5173"}
     )
     @GetMapping({"/validate-qr-status"})
-    public ResponseEntity<Response> validateQrStatus(@RequestParam String qrCode, @RequestParam String proposalId) {
+    public ResponseEntity<Response> validateQrStatus(@RequestParam String qrCode) {
         log.info("validate-qr-status");
-        Response response = this.proposalService.validateQrStatus(qrCode, proposalId);
+        Response response = this.proposalService.validateQrStatus(qrCode);
         return ResponseEntity.ok(response);
     }
 

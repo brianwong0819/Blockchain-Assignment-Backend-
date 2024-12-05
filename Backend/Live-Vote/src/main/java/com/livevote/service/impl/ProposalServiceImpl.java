@@ -200,21 +200,14 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
     public Response updateQrStatus(String proposalId, String qrCode, String userWalletAddress) {
         if (StringUtils.isNotEmpty(proposalId) && StringUtils.isNotEmpty(proposalId) && StringUtils.isNotEmpty(userWalletAddress)) {
             VotingResult votingResult = votingResultRepository.findByProposalIdAndQrCode(proposalId, qrCode);
-            if (ObjectUtils.isEmpty(votingResult)) {
-                return Response.builder()
-                        .statusCode(Utility.STATUS_NOT_FOUND)
-                        .message("QR Code is not for the given proposal ID.")
-                        .build();
-            } else {
-                votingResult.setUserAddress(userWalletAddress);
-                votingResult.setStatus(true);
-                votingResultRepository.save(votingResult);
+            votingResult.setUserAddress(userWalletAddress);
+            votingResult.setStatus(true);
+            votingResultRepository.save(votingResult);
 
-                return Response.builder()
-                        .statusCode(Utility.STATUS_SUCCESSFUL)
-                        .message("Qr Code Status is updated successfully")
-                        .build();
-            }
+            return Response.builder()
+                    .statusCode(Utility.STATUS_SUCCESSFUL)
+                    .message("Qr Code Status is updated successfully")
+                    .build();
         } else {
             return Response.builder()
                     .statusCode(Utility.STATUS_ERROR)
@@ -262,12 +255,12 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
     }
 
     @Override
-    public Response validateQrStatus(String qrCode, String proposalId) {
-        if (StringUtils.isEmpty(qrCode) || StringUtils.isEmpty(proposalId)) {
-            throw new IllegalArgumentException("QR Code and Proposal Id cannot be null or empty");
+    public Response validateQrStatus(String qrCode) {
+        if (StringUtils.isEmpty(qrCode)) {
+            throw new IllegalArgumentException("QR Code cannot be null or empty");
         }
 
-        VotingResult votingResult = votingResultRepository.findByProposalIdAndQrCode(proposalId, qrCode);
+        VotingResult votingResult = votingResultRepository.findByQrCode(qrCode);
         if (!ObjectUtils.isEmpty(votingResult)) {
             if (votingResult.getStatus()) {
                 return Response.builder()
@@ -283,7 +276,7 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
         } else {
             return Response.builder()
                     .statusCode(Utility.STATUS_NOT_FOUND)
-                    .message("QR Code is not for the given proposal ID.")
+                    .message("QR Code not found.")
                     .build();
         }
     }
