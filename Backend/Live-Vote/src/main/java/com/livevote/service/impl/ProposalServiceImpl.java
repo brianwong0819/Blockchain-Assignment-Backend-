@@ -296,15 +296,19 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
 
         List<VotingResult> results;
 
+        // Fetch results based on whether userWalletAddress is provided
         if (StringUtils.isNotEmpty(userWalletAddress)) {
-            VotingResult result = votingResultRepository.findByProposalIdAndUserAddress(proposalId, userWalletAddress);
-            results = result != null ? List.of(result) : List.of();
+            results = votingResultRepository.findByProposalIdAndUserAddressWithNonNullChoiceId(proposalId, userWalletAddress);
         } else {
-            results = votingResultRepository.findByProposalId(proposalId);
+            results = votingResultRepository.findByProposalIdWithNonNullChoiceId(proposalId);
+        }
+
+        if (results.isEmpty()) {
+            return List.of();
         }
 
         return results.stream()
-                .sorted(Comparator.comparing(VotingResult::getVoteTimestamp))
+                .sorted(Comparator.comparing(VotingResult::getVoteTimestamp)) // Sort by vote timestamp in ascending order
                 .map(result -> VotingResultResponse.builder()
                         .userWalletAddress(result.getUserAddress())
                         .choiceId(result.getChoiceId())
@@ -312,6 +316,7 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
                         .build())
                 .collect(Collectors.toList());
     }
+
 
     private String saveFile(MultipartFile file) throws Exception {
         Path uploadDirectory = Paths.get("uploads");

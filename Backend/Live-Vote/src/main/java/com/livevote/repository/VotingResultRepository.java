@@ -23,5 +23,9 @@ public interface VotingResultRepository extends JpaRepository<VotingResult, Long
     @Query("SELECT v.proposalId FROM VotingResult v WHERE v.userAddress = :userAddress AND v.status = true AND v.choiceId IS NOT NULL")
     List<String> findByUserAddressAndStatusIsTrueAndChoiceIdNotNull(@Param("userAddress") String userAddress);
 
-    List<VotingResult> findByProposalId(String proposalId);
+    @Query("SELECT vr FROM VotingResult vr WHERE vr.proposalId = :proposalId AND vr.userAddress = :userAddress AND vr.choiceId IS NOT NULL")
+    List<VotingResult> findByProposalIdAndUserAddressWithNonNullChoiceId(@Param("proposalId") String proposalId, @Param("userAddress") String userWalletAddress);
+
+    @Query("SELECT vr FROM VotingResult vr WHERE vr.proposalId = :proposalId AND vr.choiceId IS NOT NULL")
+    List<VotingResult> findByProposalIdWithNonNullChoiceId(@Param("proposalId") String proposalId);
 }
