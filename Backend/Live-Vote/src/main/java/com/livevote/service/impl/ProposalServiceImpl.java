@@ -248,7 +248,8 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
     @Override
     public List<String> getUserVotedProposals(String userWalletAddress) {
         if (StringUtils.isNotEmpty(userWalletAddress)) {
-            return votingResultRepository.findByUserAddressAndStatusIsTrue(userWalletAddress);
+            List<String> votedProposals = votingResultRepository.findByUserAddressAndStatusIsTrue(userWalletAddress);
+            return votedProposals.isEmpty() ? null : votedProposals;
         }
         return null;
     }
