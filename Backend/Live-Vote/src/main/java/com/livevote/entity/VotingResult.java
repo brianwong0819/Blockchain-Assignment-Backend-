@@ -36,8 +36,6 @@ public class VotingResult {
 
     private LocalDateTime createdAt;
 
-    private Long voteTimestamp;
-
 
     @PrePersist
     protected void onCreate() {

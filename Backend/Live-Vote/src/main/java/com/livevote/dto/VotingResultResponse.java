@@ -8,7 +8,5 @@ import lombok.Data;
 @AllArgsConstructor
 @Data
 public class VotingResultResponse {
-    private String userWalletAddress;
-    private String choiceId;
-    private Long voteTimestamp;
+    private String qrCode;
 }

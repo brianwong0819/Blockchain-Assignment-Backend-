@@ -3,7 +3,6 @@ package com.livevote.service.impl;
 import com.livevote.dto.ProposalDetailsResponse;
 import com.livevote.dto.ProposalRequest;
 import com.livevote.dto.Response;
-import com.livevote.dto.VotingResultResponse;
 import com.livevote.entity.VotingChoices;
 import com.livevote.entity.VotingProposal;
 import com.livevote.entity.VotingResult;
@@ -220,30 +219,16 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
     public Response saveVotingResult(String proposalId, String userWalletAddress, String choiceId) {
         if (StringUtils.isNotEmpty(proposalId) && StringUtils.isNotEmpty(userWalletAddress) && StringUtils.isNotEmpty(choiceId)) {
             VotingResult votingResult = votingResultRepository.findByProposalIdAndUserAddress(proposalId, userWalletAddress);
+            votingResult.setChoiceId(choiceId);
+            votingResultRepository.save(votingResult);
 
-            if (votingResult != null) {
-                votingResult.setChoiceId(choiceId);
-                votingResult.setVoteTimestamp(System.currentTimeMillis() / 1000);
-                votingResultRepository.save(votingResult);
-
-                return Response.builder()
-                        .statusCode(Utility.STATUS_SUCCESSFUL)
-                        .message("Voting result is saved successfully.")
-                        .build();
-            } else {
-                return Response.builder()
-                        .statusCode(Utility.STATUS_NOT_FOUND)
-                        .message("Voting result not found for the given proposal ID and user wallet address.")
-                        .build();
-            }
-        } else {
             return Response.builder()
-                    .statusCode(Utility.STATUS_INVALID_REQUEST)
-                    .message("Invalid request. Please provide all required fields.")
+                    .statusCode(Utility.STATUS_SUCCESSFUL)
+                    .message("Voting result is saved successfully.")
                     .build();
-        }
+        } else {
+        return null;}
     }
-
 
     @Override
     public List<String> getUserVotedProposals(String userWalletAddress) {
@@ -264,30 +249,6 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
         return votingResult.getStatus();
     }
 
-    @Override
-    public List<VotingResultResponse> getVotingResult(String proposalId, String userWalletAddress) {
-        if (StringUtils.isEmpty(proposalId)) {
-            throw new IllegalArgumentException("Proposal ID cannot be null or empty");
-        }
-
-        List<VotingResult> results;
-
-        if (StringUtils.isNotEmpty(userWalletAddress)) {
-            VotingResult result = votingResultRepository.findByProposalIdAndUserAddress(proposalId, userWalletAddress);
-            results = result != null ? List.of(result) : List.of();
-        } else {
-            results = votingResultRepository.findByProposalId(proposalId);
-        }
-
-        return results.stream()
-                .sorted(Comparator.comparing(VotingResult::getVoteTimestamp))
-                .map(result -> VotingResultResponse.builder()
-                        .userWalletAddress(result.getUserAddress())
-                        .choiceId(result.getChoiceId())
-                        .voteTimestamp(result.getVoteTimestamp())
-                        .build())
-                .collect(Collectors.toList());
-    }
 
     private String saveFile(MultipartFile file) throws Exception {
         Path uploadDirectory = Paths.get("uploads");
