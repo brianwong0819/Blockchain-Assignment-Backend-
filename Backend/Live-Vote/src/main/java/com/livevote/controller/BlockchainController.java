@@ -70,7 +70,7 @@ public class BlockchainController {
     }
 
     @CrossOrigin(origins = "http://localhost:5173")
-    @PostMapping({"/distributeTokens"})
+    @GetMapping({"/distributeTokens"})
     public ResponseEntity<String> distributeTokens(@RequestParam String roomId, @RequestParam String userAddress) {
         try {
             this.votingService.distributeTokens(roomId, userAddress);
