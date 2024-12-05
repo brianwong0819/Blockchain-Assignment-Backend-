@@ -47,23 +47,25 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
         String avatarPath = this.saveFile(avatar);
         String state = this.determineState(proposalRequest.getStartDate(), proposalRequest.getEndDate());
         String proposalId = this.generateProposalId();
-        VotingProposal votingProposal = VotingProposal.builder()
-                .proposalId(proposalId)
-                .title(proposalRequest.getTitle())
-                .body(proposalRequest.getBody())
-                .avatar(avatarPath)
-                .symbol(proposalRequest.getSymbol())
-                .startDate(proposalRequest.getStartDate())
-                .endDate(proposalRequest.getEndDate())
-                .state(state)
-                .numOfQR(proposalRequest.getNumOfQR())
-                .createDate(proposalRequest.getCreateDate())
-                .build();
-        this.votingProposalRepository.save(votingProposal);
+
         List<String> choiceNames = proposalRequest.getChoices().stream().map(ProposalRequest.ChoiceRequest::getName).toList();
         if (choiceNames.size() != choiceAvatars.size()) {
             throw new IllegalArgumentException("Mismatch between choice names and avatars");
         } else {
+            VotingProposal votingProposal = VotingProposal.builder()
+                    .proposalId(proposalId)
+                    .title(proposalRequest.getTitle())
+                    .body(proposalRequest.getBody())
+                    .avatar(avatarPath)
+                    .symbol(proposalRequest.getSymbol())
+                    .startDate(proposalRequest.getStartDate())
+                    .endDate(proposalRequest.getEndDate())
+                    .state(state)
+                    .numOfQR(proposalRequest.getNumOfQR())
+                    .createDate(proposalRequest.getCreateDate())
+                    .build();
+            this.votingProposalRepository.save(votingProposal);
+
             List<VotingChoices> choicesList = new ArrayList();
 
             for(int i = 0; i < choiceNames.size(); ++i) {
