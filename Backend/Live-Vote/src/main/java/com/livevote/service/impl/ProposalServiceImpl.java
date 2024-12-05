@@ -255,14 +255,30 @@ public class ProposalServiceImpl implements ProposalServiceInterface {
     }
 
     @Override
-    public Boolean validateQrStatus(String qrCode) {
+    public Response validateQrStatus(String qrCode) {
         if (StringUtils.isEmpty(qrCode)) {
             throw new IllegalArgumentException("QR Code cannot be null or empty");
         }
 
         VotingResult votingResult = votingResultRepository.findByQrCode(qrCode);
-
-        return votingResult.getStatus();
+        if (!ObjectUtils.isEmpty(votingResult)) {
+            if (votingResult.getStatus()) {
+                return Response.builder()
+                        .statusCode(Utility.STATUS_SUCCESSFUL)
+                        .message("true")
+                        .build();
+            } else {
+                return Response.builder()
+                        .statusCode(Utility.STATUS_SUCCESSFUL)
+                        .message("false")
+                        .build();
+            }
+        } else {
+            return Response.builder()
+                    .statusCode(Utility.STATUS_NOT_FOUND)
+                    .message("QR Code not found.")
+                    .build();
+        }
     }
 
     @Override
