@@ -109,7 +109,7 @@ public class ProposalController {
     @CrossOrigin(
             origins = {"http://localhost:5173"}
     )
-    @PostMapping({"get-voting-result"})
+    @GetMapping({"get-voting-result"})
     public ResponseEntity<List<VotingResultResponse>> getVotingResult(@RequestParam String proposalId, @RequestParam(required = false) String userWalletAddress) {
         log.info("get-voting-result");
         List<VotingResultResponse> response = this.proposalService.getVotingResult(proposalId, userWalletAddress);
