@@ -23,7 +23,5 @@ public interface VotingResultRepository extends JpaRepository<VotingResult, Long
     @Query("SELECT v.proposalId FROM VotingResult v WHERE v.userAddress = :userAddress AND v.status = true")
     List<String> findByUserAddressAndStatusIsTrue(@Param("userAddress") String userAddress);
 
-    VotingResult findByQrCode(String qrCode);
-
     List<VotingResult> findByProposalId(String proposalId);
 }
