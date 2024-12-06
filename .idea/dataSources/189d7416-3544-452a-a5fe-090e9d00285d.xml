@@ -3,7 +3,15 @@
   <database-model serializer="dbm" dbms="POSTGRES" family-id="POSTGRES" format-version="4.53">
     <root id="1">
       <DateStyle>mdy</DateStyle>
-      <Grants>16389||-9223372036854775808|c|G
+      <Grants>1||-9223372036854775808|c|G
+1||10|c|G
+1||10|C|G
+1||10|T|G
+4||-9223372036854775808|c|G
+4||10|c|G
+4||10|C|G
+4||10|T|G
+16389||-9223372036854775808|c|G
 16389||16384|c|G
 16389||16387|c|G
 16389||16384|C|G
@@ -11,9 +19,9 @@
 16389||-9223372036854775808|T|G
 16389||16384|T|G
 16389||16387|T|G</Grants>
-      <IntrospectionStateNumber>54279</IntrospectionStateNumber>
-      <ServerVersion>16.4</ServerVersion>
-      <StartupTime>1730790556</StartupTime>
+      <IntrospectionStateNumber>109586</IntrospectionStateNumber>
+      <ServerVersion>16.6</ServerVersion>
+      <StartupTime>1733405043</StartupTime>
       <TimeZones>true ACDT
 true ACSST
 false ACST
@@ -808,7 +816,7 @@ false Zulu
 13187||10|C|G
 13187||-9223372036854775808|U|G
 13187||10|U|G</Grants>
-      <IntrospectionStateNumber>54279</IntrospectionStateNumber>
+      <IntrospectionStateNumber>109586</IntrospectionStateNumber>
       <ObjectId>16389</ObjectId>
       <OwnerName>LiveVote_Database_owner</OwnerName>
     </database>
@@ -4252,13 +4260,31 @@ false Zulu
     <schema id="266" parent="2" name="public">
       <Comment>standard public schema</Comment>
       <Current>1</Current>
-      <IntrospectionStateNumber>54279</IntrospectionStateNumber>
-      <LastIntrospectionLocalTimestamp>2024-11-05.07:30:23</LastIntrospectionLocalTimestamp>
+      <IntrospectionStateNumber>109586</IntrospectionStateNumber>
+      <LastIntrospectionLocalTimestamp>2024-12-05.14:48:39</LastIntrospectionLocalTimestamp>
       <ObjectId>2200</ObjectId>
       <StateNumber>523</StateNumber>
       <OwnerName>pg_database_owner</OwnerName>
     </schema>
-    <sequence id="267" parent="266" name="users_id_seq">
+    <routine id="267" parent="266" name="generate_choice_id">
+      <ObjectId>81929</ObjectId>
+      <PgRoutineKind>pg-trigger</PgRoutineKind>
+      <ResultsDefinition>trigger</ResultsDefinition>
+      <Rows>0.0</Rows>
+      <SourceTextLength>110</SourceTextLength>
+      <StateNumber>83998</StateNumber>
+      <LanguageName>plpgsql</LanguageName>
+      <OwnerName>LiveVote_Database_owner</OwnerName>
+    </routine>
+    <sequence id="268" parent="266" name="choice_id_seq">
+      <ObjectId>81928</ObjectId>
+      <SequenceIdentity>1</SequenceIdentity>
+      <StartValue>48</StartValue>
+      <StateNumber>84007</StateNumber>
+      <StoredType>bigint|0s</StoredType>
+      <OwnerName>LiveVote_Database_owner</OwnerName>
+    </sequence>
+    <sequence id="269" parent="266" name="users_id_seq">
       <ObjectId>24576</ObjectId>
       <SequenceIdentity>1</SequenceIdentity>
       <StartValue>1</StartValue>
@@ -4266,7 +4292,7 @@ false Zulu
       <StoredType>integer|0s</StoredType>
       <OwnerName>LiveVote_Database_owner</OwnerName>
     </sequence>
-    <sequence id="268" parent="266" name="voting_choices_id_seq">
+    <sequence id="270" parent="266" name="voting_choices_id_seq">
       <ObjectId>49152</ObjectId>
       <SequenceIdentity>1</SequenceIdentity>
       <StartValue>1</StartValue>
@@ -4274,7 +4300,7 @@ false Zulu
       <StoredType>bigint|0s</StoredType>
       <OwnerName>LiveVote_Database_owner</OwnerName>
     </sequence>
-    <sequence id="269" parent="266" name="voting_proposal_id_seq">
+    <sequence id="271" parent="266" name="voting_proposal_id_seq">
       <ObjectId>49160</ObjectId>
       <SequenceIdentity>1</SequenceIdentity>
       <StartValue>1</StartValue>
@@ -4282,25 +4308,43 @@ false Zulu
       <StoredType>bigint|0s</StoredType>
       <OwnerName>LiveVote_Database_owner</OwnerName>
     </sequence>
-    <table id="270" parent="266" name="users">
+    <sequence id="272" parent="266" name="voting_result_id_seq">
+      <ObjectId>90149</ObjectId>
+      <SequenceIdentity>1</SequenceIdentity>
+      <StartValue>1</StartValue>
+      <StateNumber>85006</StateNumber>
+      <StoredType>bigint|0s</StoredType>
+      <OwnerName>LiveVote_Database_owner</OwnerName>
+    </sequence>
+    <table id="273" parent="266" name="users">
       <ObjectId>24577</ObjectId>
       <StateNumber>1030</StateNumber>
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>LiveVote_Database_owner</OwnerName>
     </table>
-    <table id="271" parent="266" name="voting_choices">
+    <table id="274" parent="266" name="voting_choices">
       <ObjectId>49153</ObjectId>
-      <StateNumber>54278</StateNumber>
+      <StateNumber>102408</StateNumber>
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>LiveVote_Database_owner</OwnerName>
     </table>
-    <table id="272" parent="266" name="voting_proposal">
+    <table id="275" parent="266" name="voting_proposal">
       <ObjectId>49161</ObjectId>
-      <StateNumber>54278</StateNumber>
+      <StateNumber>102408</StateNumber>
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>LiveVote_Database_owner</OwnerName>
     </table>
-    <column id="273" parent="270" name="id">
+    <table id="276" parent="266" name="voting_result">
+      <ObjectId>90150</ObjectId>
+      <StateNumber>102408</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>LiveVote_Database_owner</OwnerName>
+    </table>
+    <argument id="277" parent="267">
+      <ArgumentDirection>R</ArgumentDirection>
+      <StoredType>trigger|0s</StoredType>
+    </argument>
+    <column id="278" parent="273" name="id">
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StateNumber>1029</StateNumber>
@@ -4308,21 +4352,21 @@ false Zulu
       <SequenceId>24576</SequenceId>
       <TypeId>20</TypeId>
     </column>
-    <column id="274" parent="270" name="username">
+    <column id="279" parent="273" name="username">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StateNumber>1030</StateNumber>
       <StoredType>varchar(255)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="275" parent="270" name="hashed_password">
+    <column id="280" parent="273" name="hashed_password">
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StateNumber>1024</StateNumber>
       <StoredType>varchar(255)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <index id="276" parent="270" name="users_pkey">
+    <index id="281" parent="273" name="users_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>24587</ObjectId>
@@ -4331,7 +4375,7 @@ false Zulu
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <index id="277" parent="270" name="users_username_key">
+    <index id="282" parent="273" name="users_username_key">
       <ColNames>username</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>24594</ObjectId>
@@ -4342,20 +4386,20 @@ false Zulu
       <CollationIds>100</CollationIds>
       <CollationParentNames>pg_catalog</CollationParentNames>
     </index>
-    <key id="278" parent="270" name="users_pkey">
+    <key id="283" parent="273" name="users_pkey">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>24588</ObjectId>
       <Primary>1</Primary>
       <StateNumber>1029</StateNumber>
       <UnderlyingIndexId>24587</UnderlyingIndexId>
     </key>
-    <key id="279" parent="270" name="users_username_key">
+    <key id="284" parent="273" name="users_username_key">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>24595</ObjectId>
       <StateNumber>1030</StateNumber>
       <UnderlyingIndexId>24594</UnderlyingIndexId>
     </key>
-    <column id="280" parent="271" name="id">
+    <column id="285" parent="274" name="id">
       <IdentityKind>by-default</IdentityKind>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -4364,48 +4408,76 @@ false Zulu
       <SequenceId>49152</SequenceId>
       <TypeId>20</TypeId>
     </column>
-    <column id="281" parent="271" name="avatar">
+    <column id="286" parent="274" name="avatar">
       <Position>2</Position>
       <StateNumber>22528</StateNumber>
       <StoredType>varchar(255)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="282" parent="271" name="name">
+    <column id="287" parent="274" name="name">
       <Position>3</Position>
       <StateNumber>22528</StateNumber>
       <StoredType>varchar(255)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="283" parent="271" name="voting_proposal_id">
+    <column id="288" parent="274" name="voting_proposal_id">
       <Position>4</Position>
       <StateNumber>22528</StateNumber>
       <StoredType>bigint|0s</StoredType>
       <TypeId>20</TypeId>
     </column>
-    <foreign-key id="284" parent="271" name="fk3jkepo2qopfp0g3uvqioa7dsc">
+    <column id="289" parent="274" name="choice_id">
+      <Position>6</Position>
+      <StateNumber>83984</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <foreign-key id="290" parent="274" name="fk3jkepo2qopfp0g3uvqioa7dsc">
       <ColNames>voting_proposal_id</ColNames>
       <ObjectId>49168</ObjectId>
       <StateNumber>22530</StateNumber>
       <RefKeyColPositions>1</RefKeyColPositions>
       <RefTableId>49161</RefTableId>
     </foreign-key>
-    <index id="285" parent="271" name="voting_choices_pkey">
+    <index id="291" parent="274" name="voting_choices_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>49158</ObjectId>
       <Primary>1</Primary>
-      <StateNumber>54278</StateNumber>
+      <StateNumber>102408</StateNumber>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <key id="286" parent="271" name="voting_choices_pkey">
+    <index id="292" parent="274" name="unique_choice_id">
+      <ColNames>choice_id</ColNames>
+      <ObjectId>90147</ObjectId>
+      <StateNumber>102408</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+      <CollationNames>default</CollationNames>
+      <CollationIds>100</CollationIds>
+      <CollationParentNames>pg_catalog</CollationParentNames>
+    </index>
+    <key id="293" parent="274" name="voting_choices_pkey">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>49159</ObjectId>
       <Primary>1</Primary>
       <StateNumber>22528</StateNumber>
       <UnderlyingIndexId>49158</UnderlyingIndexId>
     </key>
-    <column id="287" parent="272" name="id">
+    <key id="294" parent="274" name="unique_choice_id">
+      <ObjectId>90148</ObjectId>
+      <StateNumber>85003</StateNumber>
+      <UnderlyingIndexId>90147</UnderlyingIndexId>
+    </key>
+    <trigger id="295" parent="274" name="set_choice_id">
+      <Events>I</Events>
+      <ObjectId>81930</ObjectId>
+      <StateNumber>84000</StateNumber>
+      <Turn>before-row</Turn>
+      <CallRoutineId>81929</CallRoutineId>
+    </trigger>
+    <column id="296" parent="275" name="id">
       <IdentityKind>by-default</IdentityKind>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -4414,82 +4486,184 @@ false Zulu
       <SequenceId>49160</SequenceId>
       <TypeId>20</TypeId>
     </column>
-    <column id="288" parent="272" name="avatar">
+    <column id="297" parent="275" name="avatar">
       <Position>2</Position>
       <StateNumber>22529</StateNumber>
       <StoredType>varchar(255)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="289" parent="272" name="body">
+    <column id="298" parent="275" name="body">
       <Position>3</Position>
-      <StateNumber>22529</StateNumber>
-      <StoredType>varchar(255)|0s</StoredType>
+      <StateNumber>89110</StateNumber>
+      <StoredType>varchar(3000)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="290" parent="272" name="end_date">
+    <column id="299" parent="275" name="end_date">
       <Position>4</Position>
       <StateNumber>22529</StateNumber>
       <StoredType>bigint|0s</StoredType>
       <TypeId>20</TypeId>
     </column>
-    <column id="291" parent="272" name="num_ofqr">
+    <column id="300" parent="275" name="num_ofqr">
       <NotNull>1</NotNull>
       <Position>5</Position>
       <StateNumber>22529</StateNumber>
       <StoredType>integer|0s</StoredType>
       <TypeId>23</TypeId>
     </column>
-    <column id="292" parent="272" name="start_date">
+    <column id="301" parent="275" name="start_date">
       <Position>6</Position>
       <StateNumber>22529</StateNumber>
       <StoredType>bigint|0s</StoredType>
       <TypeId>20</TypeId>
     </column>
-    <column id="293" parent="272" name="state">
+    <column id="302" parent="275" name="state">
       <Position>7</Position>
       <StateNumber>22529</StateNumber>
       <StoredType>varchar(255)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="294" parent="272" name="symbol">
+    <column id="303" parent="275" name="symbol">
       <Position>8</Position>
       <StateNumber>22529</StateNumber>
       <StoredType>varchar(255)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="295" parent="272" name="title">
+    <column id="304" parent="275" name="title">
       <Position>9</Position>
       <StateNumber>22529</StateNumber>
       <StoredType>varchar(255)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="296" parent="272" name="create_date">
+    <column id="305" parent="275" name="create_date">
       <Position>10</Position>
       <StateNumber>31744</StateNumber>
       <StoredType>bigint|0s</StoredType>
       <TypeId>20</TypeId>
     </column>
-    <column id="297" parent="272" name="proposal_id">
+    <column id="306" parent="275" name="proposal_id">
       <Position>11</Position>
       <StateNumber>31745</StateNumber>
       <StoredType>varchar(255)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <index id="298" parent="272" name="voting_proposal_pkey">
+    <index id="307" parent="275" name="voting_proposal_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>49166</ObjectId>
       <Primary>1</Primary>
-      <StateNumber>54278</StateNumber>
+      <StateNumber>102408</StateNumber>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <key id="299" parent="272" name="voting_proposal_pkey">
+    <index id="308" parent="275" name="unique_proposal_id">
+      <ColNames>proposal_id</ColNames>
+      <ObjectId>90131</ObjectId>
+      <StateNumber>102408</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+      <CollationNames>default</CollationNames>
+      <CollationIds>100</CollationIds>
+      <CollationParentNames>pg_catalog</CollationParentNames>
+    </index>
+    <key id="309" parent="275" name="voting_proposal_pkey">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>49167</ObjectId>
       <Primary>1</Primary>
       <StateNumber>22529</StateNumber>
       <UnderlyingIndexId>49166</UnderlyingIndexId>
+    </key>
+    <key id="310" parent="275" name="unique_proposal_id">
+      <ObjectId>90132</ObjectId>
+      <StateNumber>84997</StateNumber>
+      <UnderlyingIndexId>90131</UnderlyingIndexId>
+    </key>
+    <column id="311" parent="276" name="id">
+      <IdentityKind>by-default</IdentityKind>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>85006</StateNumber>
+      <StoredType>bigint|0s</StoredType>
+      <SequenceId>90149</SequenceId>
+      <TypeId>20</TypeId>
+    </column>
+    <column id="312" parent="276" name="proposal_id">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StateNumber>87040</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="313" parent="276" name="qr_code">
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StateNumber>85006</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="314" parent="276" name="user_address">
+      <Position>4</Position>
+      <StateNumber>87049</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="315" parent="276" name="choice_id">
+      <Position>5</Position>
+      <StateNumber>87054</StateNumber>
+      <StoredType>varchar(255)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="316" parent="276" name="status">
+      <NotNull>1</NotNull>
+      <Position>6</Position>
+      <StateNumber>87044</StateNumber>
+      <StoredType>boolean|0s</StoredType>
+      <TypeId>16</TypeId>
+    </column>
+    <column id="317" parent="276" name="created_at">
+      <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
+      <Position>7</Position>
+      <StateNumber>85006</StateNumber>
+      <StoredType>timestamp|0s</StoredType>
+      <TypeId>1114</TypeId>
+    </column>
+    <column id="318" parent="276" name="vote_timestamp">
+      <Position>9</Position>
+      <StateNumber>100352</StateNumber>
+      <StoredType>bigint|0s</StoredType>
+      <TypeId>20</TypeId>
+    </column>
+    <foreign-key id="319" parent="276" name="fk_proposal">
+      <ColNames>proposal_id</ColNames>
+      <ObjectId>98304</ObjectId>
+      <OnDelete>cascade</OnDelete>
+      <StateNumber>87040</StateNumber>
+      <RefKeyColPositions>11</RefKeyColPositions>
+      <RefTableId>49161</RefTableId>
+    </foreign-key>
+    <foreign-key id="320" parent="276" name="fk_choice">
+      <ColNames>choice_id</ColNames>
+      <ObjectId>90163</ObjectId>
+      <OnDelete>cascade</OnDelete>
+      <StateNumber>85006</StateNumber>
+      <RefKeyColPositions>6</RefKeyColPositions>
+      <RefTableId>49153</RefTableId>
+    </foreign-key>
+    <index id="321" parent="276" name="voting_result_pkey">
+      <ColNames>id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>90156</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>102408</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+    </index>
+    <key id="322" parent="276" name="voting_result_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>90157</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>85006</StateNumber>
+      <UnderlyingIndexId>90156</UnderlyingIndexId>
     </key>
   </database-model>
 </dataSource>
