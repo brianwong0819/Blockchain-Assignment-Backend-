@@ -23,18 +23,6 @@ public class BlockchainController {
     }
 
     @CrossOrigin(origins = "http://localhost:5173")
-    @PostMapping({"/vote"})
-    public ResponseEntity<String> vote(@RequestParam String roomId, @RequestParam int candidateId, @RequestParam String userPrivateKey) {
-        try {
-            String result = this.votingService.vote(roomId, candidateId, userPrivateKey);
-            return ResponseEntity.ok(result);
-        } catch (Exception var5) {
-            Exception e = var5;
-            return ResponseEntity.status(500).body("Failed to cast vote: " + e.getMessage());
-        }
-    }
-
-    @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping({"/get-votes"})
     public ResponseEntity<String> getCandidateVotes(@RequestParam String roomId, @RequestParam int candidateId) {
         try {

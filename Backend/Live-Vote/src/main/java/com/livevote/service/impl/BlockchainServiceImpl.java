@@ -14,11 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.web3j.abi.datatypes.Array;
-import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.crypto.Credentials;
 import org.web3j.tuples.generated.Tuple2;
-import org.web3j.tuples.generated.Tuple4;
 import org.web3j.tx.gas.DefaultGasProvider;
 
 @Service
@@ -36,11 +33,6 @@ public class BlockchainServiceImpl implements BlockchainServiceInterface {
 
     private VotingRooms getAdminVotingRooms() {
         return this.blockchainService.getVotingRooms();
-    }
-
-    private VotingRooms getUserVotingRooms(String userPrivateKey) {
-        Credentials userCredentials = Credentials.create(userPrivateKey);
-        return VotingRooms.load("0x5FbDB2315678afecb367f032d93F642f64180aa3", this.blockchainService.getWeb3j(), userCredentials, new DefaultGasProvider());
     }
 
     public String createRoom(String roomId, int tokenLimit, List<String> candidateIds) {
@@ -62,20 +54,6 @@ public class BlockchainServiceImpl implements BlockchainServiceInterface {
         } catch (Exception e) {
             logger.error("Error creating voting room", e);
             return "Error creating voting room: " + e.getMessage();
-        }
-    }
-
-
-    public String vote(String roomId, int candidateId, String userPrivateKey) {
-        try {
-            int numericRoomId = Integer.parseInt(roomId.substring(4));
-            VotingRooms votingRoomsForUser = this.getUserVotingRooms(userPrivateKey);
-            votingRoomsForUser.vote(BigInteger.valueOf((long)numericRoomId), BigInteger.valueOf((long)candidateId)).send();
-            return "Vote cast successfully";
-        } catch (Exception var6) {
-            Exception e = var6;
-            logger.error("Error voting", e);
-            return "Error voting: " + e.getMessage();
         }
     }
 
@@ -193,7 +171,6 @@ public class BlockchainServiceImpl implements BlockchainServiceInterface {
         }
     }
 
-
     @Override
     public List<Map<String, Object>> getClosedRoomsDetailsFromProposals() {
         try {
@@ -248,6 +225,4 @@ public class BlockchainServiceImpl implements BlockchainServiceInterface {
             throw new RuntimeException("Error getting closed room details: " + e.getMessage());
         }
     }
-
-
 }

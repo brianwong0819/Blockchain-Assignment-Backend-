@@ -29,8 +29,4 @@ public class BlockchainService {
     public VotingRooms getVotingRooms() {
         return this.votingRooms;
     }
-
-    public Web3j getWeb3j() {
-        return this.web3j;
-    }
 }
