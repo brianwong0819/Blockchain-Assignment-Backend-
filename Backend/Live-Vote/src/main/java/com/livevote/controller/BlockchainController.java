@@ -35,7 +35,7 @@ public class BlockchainController {
     }
 
     @CrossOrigin(origins = "http://localhost:5173")
-    @GetMapping({"/getVotes"})
+    @GetMapping({"/get-votes"})
     public ResponseEntity<String> getCandidateVotes(@RequestParam String roomId, @RequestParam int candidateId) {
         try {
             String result = this.votingService.getCandidateVotes(roomId, candidateId);
@@ -47,7 +47,7 @@ public class BlockchainController {
     }
 
     @CrossOrigin(origins = "http://localhost:5173")
-    @GetMapping({"/getRoomCount"})
+    @GetMapping({"/get-room-count"})
     public ResponseEntity<BigInteger> getRoomCount() {
         try {
             BigInteger count = this.votingService.getRoomCount();
@@ -58,7 +58,7 @@ public class BlockchainController {
     }
 
     @CrossOrigin(origins = "http://localhost:5173")
-    @GetMapping({"/getRoomDetails"})
+    @GetMapping({"/get-room-details"})
     public ResponseEntity<String> getRoomDetails(@RequestParam String roomId) {
         try {
             String details = this.votingService.getRoomDetails(roomId);
@@ -70,7 +70,7 @@ public class BlockchainController {
     }
 
     @CrossOrigin(origins = "http://localhost:5173")
-    @GetMapping({"/distributeTokens"})
+    @GetMapping({"/distribute-tokens"})
     public ResponseEntity<String> distributeTokens(@RequestParam String roomId, @RequestParam String userAddress) {
         try {
             this.votingService.distributeTokens(roomId, userAddress);
@@ -82,7 +82,7 @@ public class BlockchainController {
     }
 
     @CrossOrigin(origins = "http://localhost:5173")
-    @GetMapping({"/getUserTokenBalance"})
+    @GetMapping({"/get-user-token-balance"})
     public ResponseEntity<Map<String, BigInteger>> getUserTokenBalanceInRoom(@RequestParam String roomId, @RequestParam String userAddress) {
         try {
             BigInteger balance = this.votingService.getUserTokenBalanceInRoom(roomId, userAddress);
@@ -98,7 +98,7 @@ public class BlockchainController {
     }
 
     @CrossOrigin(origins = "http://localhost:5173")
-    @GetMapping({"/getRoomResults"})
+    @GetMapping({"/get-room-results"})
     public ResponseEntity<Map<String, Object>> getRoomResults(@RequestParam String roomId) {
         try {
             Map<String, Object> results = this.votingService.getRoomResults(roomId);
@@ -112,7 +112,7 @@ public class BlockchainController {
     }
 
     @CrossOrigin(origins = "http://localhost:5173")
-    @GetMapping("/getClosedRoomDetails")
+    @GetMapping("/get-closed-room-details")
     public ResponseEntity<List<Map<String, Object>>> getClosedRoomDetailsFromProposals() {
         try {
             List<Map<String, Object>> roomDetails = this.votingService.getClosedRoomsDetailsFromProposals();
